@@ -295,7 +295,7 @@ do    //for loop needs condition to display, do loop just displays
                             animalNickname = "tbd";
                         }
                     }
-                } while (animalNickname == "");
+                } while (animalNickname == "");   //loops until there's an entry
 
                 // displays the new pet info and what number in the array they are
                 Console.WriteLine("\nNew pet that you've added:");
@@ -527,17 +527,159 @@ do    //for loop needs condition to display, do loop just displays
 
         case "5":
             // Edit an animal's age
-            // Console.WriteLine($"Our animals: {ourAnimals}");
+
+            for (int i = 0; i < maxPets; i++)
+            {
+                Console.WriteLine();
+                if (ourAnimals[i, 0] != "ID #: ")   //not default with an ID      
+                {
+                    for (int j = 0; j < 7; j++)
+                    {
+                        Console.WriteLine(ourAnimals[i, j]);
+                    }
+                }
+            }
+
             Console.WriteLine("Which animal's age would you like to edit? Provide the ID:");
             readResult = Console.ReadLine();
+            do
+            {
+
+                if (readResult != null)
+                {
+                    animalID = readResult.ToLower().Trim();
+
+                    if (animalID != "")
+                    {
+                        for (int i = 0; i < maxPets; i++)
+                        {
+                            if (ourAnimals[i, 0].Contains(animalID))
+                            {
+                                Console.WriteLine($"This is {ourAnimals[i, 0]}'s {ourAnimals[i, 2]}");
+                                Console.WriteLine();
+
+                                Console.WriteLine("Enter the new age for " + ourAnimals[i, 0]);
+                                readResult = Console.ReadLine();
+
+                                if (readResult != null)
+                                {
+                                    animalAge = readResult;
+
+                                    if ((int.TryParse(animalAge, out newPetAge)))
+                                    {
+                                        if (animalAge != "0")
+                                        {
+                                            ourAnimals[i, 2] = "Age: " + newPetAge;
+                                            Console.WriteLine();
+                                            Console.WriteLine($"{ourAnimals[i, 0]}'s new {ourAnimals[i, 2]}");
+                                            Console.WriteLine();
+                                            Console.WriteLine("The age field has been updated.");
+                                            Console.WriteLine("Press the Enter key to continue");
+                                            readResult = Console.ReadLine();
+                                        }
+                                        else
+                                        {
+                                            Console.WriteLine("Invalid entry. Age cannot be zero. Please try again.");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Invalid entry. Age must be a number. Please try again.");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid entry. ID cannot be blank. Please try again.");
+                        readResult = false.ToString(); // to break out of the loop and go back to the menu
+                    }
+                }
+
+            } while (readResult == "");
 
 
             break;
 
         case "6":
             //Edit an animal’s personality description
+            bool pass = false;
+
+            for (int i = 0; i < maxPets; i++)
+            {
+                Console.WriteLine();
+                if (ourAnimals[i, 0] != "ID #: ")   //not default with an ID      
+                {
+                    for (int j = 0; j < 7; j++)
+                    {
+                        Console.WriteLine(ourAnimals[i, j]);
+                    }
+                }
+            }
+
+
             Console.WriteLine("Which animal's personality description would you like to edit? Provide the ID:");
             readResult = Console.ReadLine();
+            do
+            {
+
+                if (readResult != null)
+                {
+                    animalID = readResult.ToLower().Trim();
+
+                    if (animalID != "")
+                    {
+                        for (int i = 0; i < maxPets; i++)
+                        {
+
+                            if (ourAnimals[i, 0].Contains(animalID))
+                            {
+                                Console.WriteLine($"This is {ourAnimals[i, 0]}'s {ourAnimals[i, 5]}");
+                                Console.WriteLine();
+
+                                Console.WriteLine("Enter the new personality description for " + ourAnimals[i, 0] + " (likes or dislikes, tricks, energy level)");
+                                readResult = Console.ReadLine();
+
+                                if (readResult != null)
+                                {
+                                    animalPersonalityDescription = readResult;
+
+                                    if (animalPersonalityDescription != "")
+                                    {
+                                        ourAnimals[i, 5] = "Personality description is now: " + animalPersonalityDescription;
+                                        Console.WriteLine();
+                                        Console.WriteLine($"{ourAnimals[i, 0]}'s new {ourAnimals[i, 5]}");
+                                        Console.WriteLine();
+                                        Console.WriteLine("The personality description field has been updated.");
+                                        Console.WriteLine("Press the Enter key to continue");
+                                        readResult = Console.ReadLine();
+                                        readResult = false.ToString(); // to break out of the loop and go back to the menu
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Invalid entry. Personality description cannot be blank. Please try again.");
+                                    }
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Invalid entry. Personality description cannot be blank. Please try again.");
+                                }
+
+                            }
+                   
+                        }
+
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid entry. ID cannot be blank. Please try again.");
+                        pass = true; // to break out of the loop and go back to the menu
+                    }
+                }
+
+            } while (pass == true); // to break out of the loop and go back to the menu if the entry is invalid (blank)
+
             break;
 
         case "7":
