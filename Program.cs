@@ -151,7 +151,10 @@ do    //for loop needs condition to display, do loop just displays
                     for (int j = 0; j < 7; j++)
                     {
                         Console.WriteLine(ourAnimals[i, j]);
+                        Thread.Sleep(150);
                     }
+                    
+                    Thread.Sleep(300);
                     //Console.WriteLine(ourAnimals[i, 0]);
                     // Console.WriteLine(ourAnimals[i, 1]);       //- my alternative (longer) way - however you can decide how you want the data to display 
                     // Console.WriteLine(ourAnimals[i, 3]);       //- the advantage of using the above method is that you can 
@@ -537,6 +540,7 @@ do    //for loop needs condition to display, do loop just displays
                     {
                         Console.WriteLine(ourAnimals[i, j]);
                     }
+                        Thread.Sleep(300);
                 }
             }
 
