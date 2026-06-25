@@ -303,7 +303,7 @@ do    //for loop needs condition to display, do loop just displays
                 Console.WriteLine("ID:" + animalID);
                 Console.WriteLine("Species:" + animalSpecies);
                 Console.WriteLine("Age:" + animalAge);
-                Console.WriteLine("Physical description:" + animalPersonalityDescription);
+                Console.WriteLine("Physical description:" + animalPhysicalDescription);
                 Console.WriteLine("Personality:" + animalPersonalityDescription);
                 Console.WriteLine("Nickname:" + animalNickname + "\n");
 
@@ -385,7 +385,7 @@ do    //for loop needs condition to display, do loop just displays
                                         if (animalAge != "0")
                                         {
                                             ourAnimals[i, 2] = "Age: " + newPetAge;
-                                            Console.WriteLine(ourAnimals[i, j]);
+                                            Console.WriteLine("The new age is: " + ourAnimals[i, 2]);
                                             passed = true;
                                         }
                                         else
@@ -429,7 +429,7 @@ do    //for loop needs condition to display, do loop just displays
                                     if (animalPhysicalDescription != "")
                                     {
                                         ourAnimals[i, 4] = "Physical description: " + animalPhysicalDescription;
-                                        Console.WriteLine(ourAnimals[i, j]);
+                                        Console.WriteLine("The new physical description is: " + ourAnimals[i, 4]);
                                         Console.WriteLine();
                                         Console.WriteLine("Age and physical description fields are complete for all of our friends.");
                                         Console.WriteLine("Press the Enter key to continue");
@@ -579,12 +579,16 @@ do    //for loop needs condition to display, do loop just displays
                                         }
                                         else
                                         {
-                                            Console.WriteLine("Invalid entry. Age cannot be zero. Please try again.");
+                                            Console.WriteLine("Invalid entry. Age cannot be zero. Please try again.\n");
+                                            Console.WriteLine("Press the Enter key to go back to the menu");
+                                            readResult = Console.ReadLine();
                                         }
                                     }
                                     else
                                     {
                                         Console.WriteLine("Invalid entry. Age must be a number. Please try again.");
+                                        Console.WriteLine("Press the Enter key to to go back to the menu");
+                                        readResult = Console.ReadLine();
                                     }
                                 }
                             }
@@ -683,87 +687,200 @@ do    //for loop needs condition to display, do loop just displays
             break;
 
         case "7":
-            //Display all cats with a specified characteristic
-            string catCharacteristic = "";
+                 // Display all dogs with a specified characteristic
+            string catCharacteristics = "";
+            string comma = ",";
 
-            while (catCharacteristic == "")
+           while (catCharacteristics == "")
             {
-                // have the user enter physical characteristics to search for
-                Console.WriteLine($"\nEnter one desired cat characteristics to search for");
+                // #2 have user enter multiple comma separated characteristics to search for
+                Console.WriteLine($"\r\nEnter one desired cat characteristic to search for");
                 readResult = Console.ReadLine();
                 if (readResult != null)
                 {
-                    catCharacteristic = readResult.ToLower().Trim();
+                    catCharacteristics = readResult.ToLower();                                   //*if the user enters a value, it is converted to lowercase and stored in the dogCharacteristics variable                
+                    Console.WriteLine();
                 }
             }
             string catDescription = "";
-            bool noMatchesCat = true;
+            string[] catSearches = catCharacteristics.Split(comma);                          //create an array of search terms from the user input
+             // trim leading and trailing spaces from each search term
+            for (int i = 0; i < catSearches.Length; i++)
+            {
+                catSearches[i] = catSearches[i].Trim();                                   //*loops through array of search terms entered and trims whitespace from each term
+            }
+                                                                                    // the "\\" is needed for the "\" symbol to show because "\" is an escape character in C#. The "\\" tells the compiler to treat the next character as a literal character, rather than an escape sequence.
+            Array.Sort(catSearches);                                                   //sorts the array of search terms in alphabetical order
+            bool matchesAnyCat = false;                                                
 
-            // #6 loop through the ourAnimals array to search for matching animals
+              // #4 update to "rotating" animation with countdown
+            // string[] searchingIcons = {".  ", ".. ", "..."}; // . .. ... <- different loader
+            string[] searching = {" |", " /", "--", " \\", " *"};                //array of search icons variable, bool that matches any cat, and string to hold the combined(personality and physical) description of the cat 
+            
+
+
+           // loop ourAnimals array to search for matching animals
             for (int i = 0; i < maxPets; i++)
             {
+
                 if (ourAnimals[i, 1].Contains("cat"))
                 {
-                    // #7 Search combined descriptions and report results
-                    catDescription = ourAnimals[i, 4] + "\n" + ourAnimals[i, 5];
-                    if (catDescription.Contains(catCharacteristic))
-                    {
-                        Console.WriteLine($"\nOur cat {ourAnimals[i, 3]} is a match!");
-                        Console.WriteLine(catDescription);
+                    
+                    // Search combined descriptions and report results
+                    catDescription = ourAnimals[i, 4] + "\r\n" + ourAnimals[i, 5];      //combines the physical and personality descriptions of the dog into one string to search through
+                    //  '\r' carriage return moves the cursor to the beginning of the line, allowing us to overwrite the existing text with the new message and icon.
+                    bool matchesCurrentCat = false;
 
-                        noMatchesCat = false;
+                    foreach (string catCharacteristic in catSearches)
+                    {
+                        // only search if there is a term to search for
+                        if (catCharacteristic != null && catCharacteristic.Trim() != "")
+                        {
+           
+
+                            for (int j = 2; j > -1 ; j--) //starts at 2 and counts down to 0, why 2 is used is because the countdown is for 3 seconds, and the loop will run 3 times (2, 1, 0)
+                            {
+                            // #5 update "searching" message to show countdown 
+                                foreach (string icon in searching)
+                                {
+                                 Console.Write($"\rsearching our cat {ourAnimals[i, 3]} for {catCharacteristic} {icon}");
+                                    Thread.Sleep(250); //sleep for 250 milliseconds to slow down the animation
+
+                                }
+                        
+                                Console.Write($"\r{new String(' ', Console.BufferWidth)}");
+                            }
+                    
+                            // #3a iterate submitted characteristic terms and search description for each term
+                    
+                            if (catDescription.Contains(" " + catCharacteristic.Trim()+ " "))
+                            {
+                                // #3b update message to reflect term 
+                                // #3c set a flag "this cat" is a match
+                                Console.WriteLine($"\nOur cat {ourAnimals[i, 3]} matches your search for {catCharacteristic.Trim()}");
+
+                                matchesCurrentCat = true;
+                                matchesAnyCat = true; //the opposite of !matchesAnyDog so that the message "None of our cat are a match found for: " + dogCharacteristics; will not be displayed if there is a match
+                      
+                            }
+                        }
                     }
+                     // #3d if the current cat is match, display the cat's info
+                    if (matchesCurrentCat)
+                    {
+                        Console.WriteLine($"\r{ourAnimals[i, 3]} ({ourAnimals[i, 0]})\n{catDescription}\n");  //displays the cat's nickname, ID, and combined physical and personality description if there is a match
+                    }
+                        
                 }
             }
-            if (noMatchesCat)
+
+            if (!matchesAnyCat)
             {
-                Console.WriteLine("None of our cats are a match found for: " + catCharacteristic);
+                Console.WriteLine("None of our cat are a match found for: " + catCharacteristics);
             }
 
-            Console.WriteLine("Press the Enter key to continue.");
+            Console.WriteLine("\n\rPress the Enter key to continue");
             readResult = Console.ReadLine();
+
             break;
+
 
         case "8":
             // Display all dogs with a specified characteristic
-            string dogCharacteristic = "";
+            string dogCharacteristics = "";
+            string commaMark = ",";
 
-            while (dogCharacteristic == "")
+           while (dogCharacteristics == "")
             {
-                // have the user enter physical characteristics to search for
-                Console.WriteLine($"\nEnter one desired dog characteristics to search for");
+                // #2 have user enter multiple comma separated characteristics to search for
+                Console.WriteLine($"\r\nEnter one desired dog characteristic to search for");
                 readResult = Console.ReadLine();
                 if (readResult != null)
                 {
-                    dogCharacteristic = readResult.ToLower().Trim();
+                    dogCharacteristics = readResult.ToLower();                                   //*if the user enters a value, it is converted to lowercase and stored in the dogCharacteristics variable                
+                    Console.WriteLine();
                 }
             }
             string dogDescription = "";
-            bool noMatchesDog = true;
+            string[] dogSearches = dogCharacteristics.Split(commaMark);                          //create an array of search terms from the user input
+             // trim leading and trailing spaces from each search term
+            for (int i = 0; i < dogSearches.Length; i++)
+            {
+                dogSearches[i] = dogSearches[i].Trim();                                   //*loops through array of search terms entered and trims whitespace from each term
+            }
+                                                                                    // the "\\" is needed for the "\" symbol to show because "\" is an escape character in C#. The "\\" tells the compiler to treat the next character as a literal character, rather than an escape sequence.
+            Array.Sort(dogSearches);                                                   //sorts the array of search terms in alphabetical order
+            bool matchesAnyDog = false;                                                
 
-            // #6 loop through the ourAnimals array to search for matching animals
+              // #4 update to "rotating" animation with countdown
+            // string[] searchingIcons = {".  ", ".. ", "..."}; // . .. ... <- different loader
+            string[] searchingIcons = {" |", " /", "--", " \\", " *"};                //array of search icons variable, bool that matches any dog, and string to hold the combined(personality and physical) description of the dog 
+            
+
+
+           // loop ourAnimals array to search for matching animals
             for (int i = 0; i < maxPets; i++)
             {
+
                 if (ourAnimals[i, 1].Contains("dog"))
                 {
-                    // #7 Search combined descriptions and report results
-                    dogDescription = ourAnimals[i, 4] + "\n" + ourAnimals[i, 5];
-                    if (dogDescription.Contains(dogCharacteristic))
-                    {
-                        Console.WriteLine($"\nOur dog {ourAnimals[i, 3]} is a match!");
-                        Console.WriteLine(dogDescription);
+                    
+                    // Search combined descriptions and report results
+                    dogDescription = ourAnimals[i, 4] + "\r\n" + ourAnimals[i, 5];      //combines the physical and personality descriptions of the dog into one string to search through
+                    //  '\r' carriage return moves the cursor to the beginning of the line, allowing us to overwrite the existing text with the new message and icon.
+                    bool matchesCurrentDog = false;
 
-                        noMatchesDog = false;
+                    foreach (string dogCharacteristic in dogSearches)
+                    {
+                        // only search if there is a term to search for
+                        if (dogCharacteristic != null && dogCharacteristic.Trim() != "")
+                        {
+           
+
+                            for (int j = 2; j > -1 ; j--) //starts at 2 and counts down to 0, why 2 is used is because the countdown is for 3 seconds, and the loop will run 3 times (2, 1, 0)
+                            {
+                            // #5 update "searching" message to show countdown 
+                                foreach (string icon in searchingIcons)
+                                {
+                                 Console.Write($"\rsearching our dog {ourAnimals[i, 3]} for {dogCharacteristic} {icon}");
+                                    Thread.Sleep(250); //sleep for 250 milliseconds to slow down the animation
+
+                                }
+                        
+                                Console.Write($"\r{new String(' ', Console.BufferWidth)}");
+                            }
+                    
+                            // #3a iterate submitted characteristic terms and search description for each term
+                    
+                            if (dogDescription.Contains(" " + dogCharacteristic.Trim()+ " "))
+                            {
+                                // #3b update message to reflect term 
+                                // #3c set a flag "this dog" is a match
+                                Console.WriteLine($"\nOur dog {ourAnimals[i, 3]} matches your search for {dogCharacteristic.Trim()}");
+
+                                matchesCurrentDog = true;
+                                matchesAnyDog = true; //the opposite of !matchesAnyDog so that the message "None of our dogs are a match found for: " + dogCharacteristics; will not be displayed if there is a match
+                      
+                            }
+                        }
                     }
+                     // #3d if the current dog is match, display the dog's info
+                    if (matchesCurrentDog)
+                    {
+                        Console.WriteLine($"\r{ourAnimals[i, 3]} ({ourAnimals[i, 0]})\n{dogDescription}\n");  //displays the dog's nickname, ID, and combined physical and personality description if there is a match
+                    }
+                        
                 }
             }
-            if (noMatchesDog)
+
+            if (!matchesAnyDog)
             {
-                Console.WriteLine("None of our dogs are a match found for: " + dogCharacteristic);
+                Console.WriteLine("None of our dogs are a match found for: " + dogCharacteristics);
             }
 
-            Console.WriteLine("Press the Enter key to continue.");
+            Console.WriteLine("\n\rPress the Enter key to continue");
             readResult = Console.ReadLine();
+
             break;
 
         default:
@@ -780,13 +897,6 @@ do    //for loop needs condition to display, do loop just displays
 // row contains a column of 6 items. Since you want to work with one animal at a time, and process all six animal characteristics during a single iteration, a foreach 
 // statement isn't the right choice.
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-//The reason why you don't use a foreach loop in this situation is because the ourAnimals array is multidimensional array. Since ourAnimals is a multidimensional string array,
-// each element contained within ourAnimals is a separate item of type string. If you used a foreach loop to iterate through ourAnimals, the foreach would recognize each string as a
-// separate item in a list of 48 string items (8 x 6 = 48). The foreach statement wouldn't process the two array dimensions separately. In other words, a foreach loop won't recognize
-// 8 rows of string elements, where each row contains a column of 6 items. Since you want to work with one animal at a time, and process all six animal characteristics during a single 
-//iteration, a foreach statement isn't the right choice.
 
 // string[][] jaggedArray = new string[][]
 // {
