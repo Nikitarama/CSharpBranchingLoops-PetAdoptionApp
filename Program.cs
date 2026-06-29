@@ -153,7 +153,7 @@ do    //for loop needs condition to display, do loop just displays
                         Console.WriteLine(ourAnimals[i, j]);
                         Thread.Sleep(150);
                     }
-                    
+
                     Thread.Sleep(300);
                     //Console.WriteLine(ourAnimals[i, 0]);
                     // Console.WriteLine(ourAnimals[i, 1]);       //- my alternative (longer) way - however you can decide how you want the data to display 
@@ -584,14 +584,14 @@ do    //for loop needs condition to display, do loop just displays
                                         else
                                         {
                                             Console.WriteLine("Invalid entry. Age cannot be zero. Please try again.\n");
-                                            Console.WriteLine("Press the Enter key to go back to the menu");
+                                            readResult = true.ToString(); 
                                             readResult = Console.ReadLine();
                                         }
                                     }
                                     else
                                     {
                                         Console.WriteLine("Invalid entry. Age must be a number. Please try again.");
-                                        Console.WriteLine("Press the Enter key to to go back to the menu");
+                                        readResult = true.ToString();
                                         readResult = Console.ReadLine();
                                     }
                                 }
@@ -861,6 +861,9 @@ do    //for loop needs condition to display, do loop just displays
                                 // #3b update message to reflect term 
                                 // #3c set a flag "this dog" is a match
                                 Console.WriteLine($"\nOur dog {ourAnimals[i, 3]} matches your search for {dogCharacteristic.Trim()}");
+
+                                // string.Trim() is important because trailing white space in the front can mess up a sort().
+                                //the \r makes the cursor return to the beginning of the line, allowing us to overwrite the existing text with the new message and icon.
 
                                 matchesCurrentDog = true;
                                 matchesAnyDog = true; //the opposite of !matchesAnyDog so that the message "None of our dogs are a match found for: " + dogCharacteristics; will not be displayed if there is a match
